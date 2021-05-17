@@ -3,9 +3,15 @@
  */
 #include<opencv2/opencv.hpp>
 #include<iostream>
+#include<string>
 
 
 using namespace cv;
+enum {
+	GRAY,
+	HSV,
+	HLS
+};
 
 class CimgRw
 {
@@ -16,26 +22,29 @@ public:
 	CimgRw() {}
 
 	//转换图像颜色
-	void changeImgColor(Mat &src) {
-		Mat hls, gray;
-
-		//转成hls
-		cvtColor(src, hls, COLOR_BGR2HLS);
-
-		//转成灰度
-		cvtColor(src, gray, COLOR_BGR2GRAY);
-
-		// 创建一个名为 "hls"窗口   默认情况下图片窗口不能拖动拉伸，除非第二个参数为WINDOW_NORMAL
-		namedWindow("hls");
-		//可拉伸
-		namedWindow("gray", WINDOW_NORMAL);
-
-		//显示图片
-		imshow("hls", hls);
-		imshow("gray", gray);
-
+	void changeImgColor(Mat &src,int iColor) {
+		Mat dts;
+		int i = -1;
+		switch (iColor)
+		{
+		case GRAY:
+			cvtColor(src, dts, COLOR_BGR2GRAY);
+			imshow("gray", dts);
+			break;
+		case HLS:
+            //转成hls
+			cvtColor(src, dts, COLOR_BGR2HLS);
+			imshow("hls", dts);
+			break;
+		case HSV:
+			cvtColor(src, dts, COLOR_BGR2HSV);
+			imshow("hsv", dts);
+		default:
+			break;
+		}
+		
 		//第三个参数：特定格式保存的参数编码，默认值为std::vector<int>  一般不写
-		imwrite("../../img/test_gray.png", gray);
+		//imwrite("../../img/test_gray.png", dts);
 	}; 
 
 	//创建一个Mat数据
@@ -66,32 +75,23 @@ public:
 
 int main(int argc, char** argv) {
 
-	// 读入一张图片（poyanghu缩小图）
-	if (argc != 2)
-	{
-		std::cout << "<image path> is empty" << std::endl;
-		return -1;
-	}
-	char* c_path = argv[1];
-	
-
-	Mat src = imread(c_path);
+	//读取一张图片
+	Mat src = imread("../../img/lenacolor.png");
 	if (src.empty())
 	{
 		std::cout << "图片为空";
 	}
+	// 创建一个名为 "hls"窗口   默认情况下图片窗口不能拖动拉伸，除非第二个参数为WINDOW_NORMAL
+	namedWindow("src");
 	imshow("src", src);
-	//以rgb格式载入一张图片
-	//Mat rgbImg = imread("C:/Users/Administrator/Desktop/a.jpg", IMREAD_COLOR);
 	
-
 	CimgRw::Ptr m_imgCC  = std::make_shared<CimgRw>();
 
 	//转为hls 和 gray
-	m_imgCC->changeImgColor(src);
+	m_imgCC->changeImgColor(src,GRAY);
 
 
-	m_imgCC->creatMatDemo();
+	
 
 	waitKey(0);
 	return 0;
