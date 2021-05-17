@@ -8,3 +8,5 @@
 
 ### 新增test_demo
 - 在tests目录下新建一个xxx.cpp 重新执行cmake .. 就能生成一个新的demo项目
+
+- test_readImg:图片读写 灰度转换  Mat对象的创建
